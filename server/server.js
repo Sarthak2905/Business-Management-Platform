@@ -12,17 +12,32 @@ const invoiceRoutes = require('./routes/invoices');
 const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
+app.use(express.json());
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://business-management-platform-eosin.vercel.app",
+];
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://business-management-platform-eosin.vercel.app",
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (Postman, server-to-server, etc.)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.use(express.json());
+
+
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
