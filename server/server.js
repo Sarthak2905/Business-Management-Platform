@@ -13,14 +13,15 @@ const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 
-app.use(cors(
-  {
-    origin:[
-       "http://localhost:5173",
-      "business-management-platform-eosin.vercel.app",
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://business-management-platform-eosin.vercel.app",
     ],
-  }
-));
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const authLimiter = rateLimit({
